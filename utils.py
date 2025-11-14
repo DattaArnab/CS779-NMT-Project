@@ -9,8 +9,6 @@ import json
 from huggingface_hub import hf_hub_download
 from tqdm import tqdm
 import pickle
-from kaggle_secrets import UserSecretsClient
-user_secrets = UserSecretsClient()
 
 WHITESPACE_MARKER = "▁"
 
@@ -47,12 +45,10 @@ def encode_and_pad(vocab_map, sent_ids, max_length):
         return sos + truncated + eos
 
 def prepare(lang, vocab_size=15000):
-    user_secrets = UserSecretsClient()
     lng = hf_hub_download(
         repo_id="Arnab-Datta-240185/CS779-Capstone-Project",
         filename=f"{lang}_prepared_data.pkl",
         repo_type="dataset",
-        token=user_secrets.get_secret("hf_token")
     )
     with open(lng, "rb") as f:
         dat = pickle.load(f)

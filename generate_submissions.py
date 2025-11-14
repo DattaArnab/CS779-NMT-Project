@@ -6,8 +6,6 @@ import torch.nn as nn
 from tqdm import tqdm
 import pandas as pd
 from huggingface_hub import hf_hub_download, HfApi 
-from kaggle_secrets import UserSecretsClient
-user_secrets = UserSecretsClient()
 import warnings
 warnings.filterwarnings("ignore")
 from utils import (
@@ -164,7 +162,6 @@ def load_models_and_tokenizers(lang):
     decoder = TransformerDecoder(
         HIDDEN_SIZE, tgt_vocab_size, NHEADS, NUM_LAYERS_DEC, DIM_FEEDFORWARD, DROPOUT, PAD_ID_TGT
     ).to(device)
-    user_secrets = UserSecretsClient()
     # Load weights
     enc_path = _find_weights(WEIGHTS_DIR, lang, "encoder")
     dec_path = _find_weights(WEIGHTS_DIR, lang, "decoder")
@@ -173,13 +170,11 @@ def load_models_and_tokenizers(lang):
             repo_id="Arnab-Datta-240185/CS779-Capstone-Project",
             filename=f"encoder_{lang}.pt",
             repo_type="dataset",
-            token=user_secrets.get_secret("hf_token"),
         )
         dec_path = hf_hub_download(
             repo_id="Arnab-Datta-240185/CS779-Capstone-Project",
             filename=f"decoder_{lang}.pt",
             repo_type="dataset",
-            token=user_secrets.get_secret("hf_token"),
         )
     encoder.load_state_dict(torch.load(enc_path, map_location=device))
     decoder.load_state_dict(torch.load(dec_path, map_location=device))
